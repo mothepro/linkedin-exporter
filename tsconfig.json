@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "ES2022",
+    "declaration": true,
+    "sourceMap": false,
+    "composite": false,
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "newLine": "lf",
+    "allowSyntheticDefaultImports": true,
+    "inlineSources": false,
+    "lib": [
+      "es2022",
+      "DOM"
+    ],
+    "types": [
+      "node"
+    ]
+  },
+  "exclude": [
+    "dist"
+  ]
+}

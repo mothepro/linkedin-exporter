@@ -1,0 +1,30 @@
+{
+  "name": "linkedin-exporter",
+  "description": "Download Linkedin Sales lists",
+  "author": "Maurice Prosper",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "sideEffects": false,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "repository": "https://github.com/mothepro/linkedin-exporter",
+  "scripts": {
+    "prerelease": "npm run build",
+    "release": "np",
+    "postrelease": "npm run deploy",
+    "prebuild": "tsc",
+    "build": "node dist/build.js 1> dist/index.html",
+    "deploy": "gh-pages -d dist"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "gh-pages": "^4.0.0",
+    "node-html-parser": "^6.1.4",
+    "np": "^7.6.2",
+    "terser": "^5.16.1",
+    "typescript": "^4.9.3"
+  }
+}
