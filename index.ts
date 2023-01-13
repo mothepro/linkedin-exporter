@@ -27,7 +27,8 @@ function download(filename: string, text: string, meta: BlobPropertyBag = { type
   document.body.appendChild(element)
 
   element.click()
-  document.body.removeChild(element)
+  // maybe we shouldn't remove the element immediately
+  // document.body.removeChild(element)
 }
 
 /** Convert an Array map to a stringified CSV. */
@@ -47,13 +48,13 @@ function toCsv(contents: Map<string, string[]>) {
 
 /** The contents and how to find them in the html */
 const xpaths = {
-  name: (index: number) =>
+  Name: (index: number) =>
     `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/figure/a/span`,
-  geography: (index: number) =>
+  Geography: (index: number) =>
     `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[3]`,
-  title: (index: number) =>
+  Title: (index: number) =>
     `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[2]/span/div`,
-  account: (index: number) =>
+  Account: (index: number) =>
     `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
 }
 
@@ -88,11 +89,11 @@ while (true)
   }
 
 // download the array map as a csv
-if (data.size)
-  try {
-    const csv = toCsv(data)
-    download(`${index}_${Date.now()}.csv`, csv)
-  } catch (err) {
-    assert(err instanceof Error)
-    alert(err.message)
-  }
+try {
+  assert(data.size, 'No data was found to export')
+  const csv = toCsv(data)
+  download(`${index}_${Date.now()}.csv`, csv)
+} catch (err) {
+  assert(err instanceof Error)
+  alert(err.message)
+}
