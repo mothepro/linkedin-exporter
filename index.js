@@ -24,7 +24,7 @@ function download(filename, text, meta = { type: 'text/csv' }) {
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();
-    document.body.removeChild(element);
+    // document.body.removeChild(element)
 }
 /** Convert an Array map to a stringified CSV. */
 function toCsv(contents) {
@@ -49,6 +49,7 @@ const xpaths = {
 /** Store the contents ready to put in a CSV. */
 const data = new Map();
 let index = 0;
+alert('Extension loaded.');
 // put as much data as possible into the array map
 while (true)
     try {
@@ -57,12 +58,15 @@ while (true)
             const xpathResult = document.evaluate(fullXpath(index), document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
             const element = assertNotNull(xpathResult.singleNodeValue, `Unable to find element for the ${index}th ${key} field.`);
             const content = assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
+            if (key == 'name')
+                alert(`Adding ${key} "${content}"`);
             data.set(key, [...((_a = data.get(key)) !== null && _a !== void 0 ? _a : []), content]);
         }
     }
     catch (err) {
         break;
     }
+alert(`Loaded ${data.size} contacts.`);
 // download the array map as a csv
 if (data.size)
     try {
