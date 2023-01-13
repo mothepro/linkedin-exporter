@@ -101,7 +101,7 @@ try {
         data = getData(systemPaths);
     }
     assert(data.size, 'No data was found to export');
-    download(`exported_${time}.csv`, toCsv(data));
+    download(`Contacts Exported on ${time}.csv`, toCsv(data));
 }
 catch (err) {
     assert(err instanceof Error);
