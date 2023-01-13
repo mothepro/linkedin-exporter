@@ -25,5 +25,11 @@ const root = parse(html);
 // replace the `href`
 const bookmarkletEl = assertNotNull(root.querySelector('a[bookmarklet]'));
 bookmarkletEl.setAttribute('href', `javascript:(function(){${encodeURI(minifiedCode)}})();`);
+// add last build time
+const buildTimeEl = root.querySelector('[build-time]');
+if (buildTimeEl) {
+    buildTimeEl.setAttribute('build-time', new Date().toString());
+    buildTimeEl.innerHTML = new Date().toString();
+}
 // Print updated HTML
 console.log(root.outerHTML);
