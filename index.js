@@ -24,6 +24,7 @@ function download(filename, text, meta = { type: 'text/csv' }) {
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();
+    // maybe we shouldn't remove the element immediately
     // document.body.removeChild(element)
 }
 /** Convert an Array map to a stringified CSV. */
@@ -41,15 +42,14 @@ function toCsv(contents) {
 }
 /** The contents and how to find them in the html */
 const xpaths = {
-    name: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/figure/a/span`,
-    geography: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[3]`,
-    title: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[2]/span/div`,
-    account: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
+    Name: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/figure/a/span`,
+    Geography: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[3]`,
+    Title: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[2]/span/div`,
+    Account: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
 };
 /** Store the contents ready to put in a CSV. */
 const data = new Map();
 let index = 0;
-alert('Extension loaded.');
 // put as much data as possible into the array map
 while (true)
     try {
@@ -58,22 +58,19 @@ while (true)
             const xpathResult = document.evaluate(fullXpath(index), document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
             const element = assertNotNull(xpathResult.singleNodeValue, `Unable to find element for the ${index}th ${key} field.`);
             const content = assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
-            if (key == 'name')
-                alert(`Adding ${key} "${content}"`);
             data.set(key, [...((_a = data.get(key)) !== null && _a !== void 0 ? _a : []), content]);
         }
     }
     catch (err) {
         break;
     }
-alert(`Loaded ${data.size} contacts.`);
 // download the array map as a csv
-if (data.size)
-    try {
-        const csv = toCsv(data);
-        download(`${index}_${Date.now()}.csv`, csv);
-    }
-    catch (err) {
-        assert(err instanceof Error);
-        alert(err.message);
-    }
+try {
+    assert(data.size, 'No data was found to export');
+    const csv = toCsv(data);
+    download(`${index}_${Date.now()}.csv`, csv);
+}
+catch (err) {
+    assert(err instanceof Error);
+    alert(err.message);
+}

@@ -10,10 +10,10 @@ declare function download(filename: string, text: string, meta?: BlobPropertyBag
 declare function toCsv(contents: Map<string, string[]>): string;
 /** The contents and how to find them in the html */
 declare const xpaths: {
-    name: (index: number) => string;
-    geography: (index: number) => string;
-    title: (index: number) => string;
-    account: (index: number) => string;
+    Name: (index: number) => string;
+    Geography: (index: number) => string;
+    Title: (index: number) => string;
+    Account: (index: number) => string;
 };
 /** Store the contents ready to put in a CSV. */
 declare const data: Map<string, string[]>;
