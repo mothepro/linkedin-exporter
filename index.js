@@ -88,7 +88,7 @@ try {
     if (data.size == 0 || index == 0) {
         console.warn('Unable to find user generated paths');
         console.log('searching system-generated xpaths');
-        [data, index] = getData(userPaths);
+        [data, index] = getData(systemPaths);
     }
     assert(data.size, 'No data was found to export');
     download(`${index}_contacts_${time}.csv`, toCsv(data));
