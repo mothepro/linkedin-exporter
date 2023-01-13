@@ -17,6 +17,7 @@
     "postrelease": "npm run deploy",
     "prebuild": "tsc",
     "build": "node dist/build.js 1> dist/index.html",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
