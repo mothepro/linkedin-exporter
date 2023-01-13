@@ -40,7 +40,7 @@ function toCsv(contents) {
     return data.map(row => row.map(csvEscape).join(',')).join('\n');
 }
 /** Find the data from the given xpaths and return as an array map. */
-function getData(xpaths) {
+function getData(xPaths) {
     var _a;
     const data = new Map();
     let index = 0;
@@ -48,10 +48,19 @@ function getData(xpaths) {
     while (true)
         try {
             index++; // 1-indexed for xpath's sake
-            for (const [key, fullXpath] of Object.entries(xpaths)) {
+            for (const [key, fullXpath] of Object.entries(xPaths)) {
                 const xpathResult = document.evaluate(fullXpath(index), document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-                const element = assertNotNull(xpathResult.singleNodeValue, `Unable to find element for the ${index}th ${key} field.`);
-                const content = assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
+                let content = '';
+                try {
+                    const element = assertNotNull(xpathResult.singleNodeValue, `Unable to find element for the ${index}th ${key} field.`);
+                    content = assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
+                }
+                catch (err) {
+                    assert(err instanceof Error);
+                    // `Account` is actually an optional field.
+                    // Rethrow the error if it's a required key.
+                    assert(key === 'Account', err.message);
+                }
                 data.set(key, [...((_a = data.get(key)) !== null && _a !== void 0 ? _a : []), content]);
             }
         }
@@ -59,7 +68,8 @@ function getData(xpaths) {
             console.error(err);
             break;
         }
-    return [data, index - 1];
+    // Return the number of rows?? `index - 1`
+    return data;
 }
 /** Paths to important fields in user-generated linkedin lists. */
 const userPaths = {
@@ -84,14 +94,14 @@ try {
         day: 'numeric',
     });
     console.log('searching user-generated xpaths');
-    let [data, index] = getData(userPaths);
-    if (data.size == 0 || index == 0) {
+    let data = getData(userPaths);
+    if (!data.size) {
         console.warn('Unable to find user generated paths');
         console.log('searching system-generated xpaths');
-        [data, index] = getData(systemPaths);
+        data = getData(systemPaths);
     }
     assert(data.size, 'No data was found to export');
-    download(`${index}_contacts_${time}.csv`, toCsv(data));
+    download(`exported_${time}.csv`, toCsv(data));
 }
 catch (err) {
     assert(err instanceof Error);

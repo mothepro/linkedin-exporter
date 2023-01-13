@@ -9,7 +9,7 @@ declare function download(filename: string, text: string, meta?: BlobPropertyBag
 /** Convert an Array map to a stringified CSV. */
 declare function toCsv(contents: Map<string, string[]>): string;
 /** Find the data from the given xpaths and return as an array map. */
-declare function getData(xpaths: Record<string, (index: number) => string>): readonly [Map<string, string[]>, number];
+declare function getData(xPaths: Record<string, (index: number) => string>): Map<string, string[]>;
 /** Paths to important fields in user-generated linkedin lists. */
 declare const userPaths: {
     Name: (index: number) => string;
