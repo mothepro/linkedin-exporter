@@ -1,4 +1,5 @@
 "use strict";
+var _a;
 /** Assert an expression is true. */
 function assert(expression, message = 'Assertion Error') {
     if (!expression)
@@ -38,36 +39,35 @@ function toCsv(contents) {
     }
     return data.map(row => row.map(csvEscape).join(',')).join('\n');
 }
-/** Append a value to an ArrayMap with the given header. */
-function updateMap(contents, header, data) {
-    var _a;
-    const column = (_a = contents.get(header)) !== null && _a !== void 0 ? _a : [];
-    column.push(data);
-    contents.set(header, column);
-}
-// Activated //
+/** The contents and how to find them in the html */
 const xpaths = {
     name: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/figure/a/span`,
     geography: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[3]`,
     title: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[2]/span/div`,
     account: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
 };
+/** Store the contents ready to put in a CSV. */
 const data = new Map();
-let index = 1;
+let index = 0;
+// put as much data as possible into the array map
 while (true)
     try {
+        index++; // 1-indexed for xpath's sake
         for (const [key, fullXpath] of Object.entries(xpaths)) {
-            const element = document.evaluate(fullXpath(index), document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            updateMap(data, key, assertNotNull(assertNotNull(element).textContent));
+            const xpathResult = document.evaluate(fullXpath(index), document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+            const element = assertNotNull(xpathResult.singleNodeValue, `Unable to find element for the ${index}th ${key} field.`);
+            const content = assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
+            data.set(key, [...((_a = data.get(key)) !== null && _a !== void 0 ? _a : []), content]);
         }
-        index++;
     }
     catch (err) {
         break;
     }
+// download the array map as a csv
 if (data.size)
     try {
-        download(`${index}_contacts__${Date.now()}.csv`, toCsv(data));
+        const csv = toCsv(data);
+        download(`${index}_${Date.now()}.csv`, csv);
     }
     catch (err) {
         assert(err instanceof Error);
