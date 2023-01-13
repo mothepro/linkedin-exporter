@@ -46,8 +46,43 @@ function toCsv(contents: Map<string, string[]>) {
   return data.map(row => row.map(csvEscape).join(',')).join('\n')
 }
 
-/** The contents and how to find them in the html */
-const xpaths = {
+/** Find the data from the given xpaths and return as an array map. */
+function getData(xpaths: Record<string, (index: number) => string>) {
+  const data: Map<string, string[]> = new Map()
+  let index = 0
+
+  // put as much data as possible into the array map
+  while (true)
+    try {
+      index++ // 1-indexed for xpath's sake
+      for (const [key, fullXpath] of Object.entries(xpaths)) {
+        const xpathResult = document.evaluate(
+          fullXpath(index),
+          document,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        )
+        const element = assertNotNull(
+          xpathResult.singleNodeValue,
+          `Unable to find element for the ${index}th ${key} field.`
+        )
+        const content = assertNotNull(
+          element.textContent,
+          `No text found in the ${index}th ${key} field.`
+        )
+        data.set(key, [...(data.get(key) ?? []), content])
+      }
+    } catch (err) {
+      console.log(err)
+      break
+    }
+
+  return [data, index] as const
+}
+
+/** Paths to important fields in user-generated linkedin lists. */
+const userPaths = {
   Name: (index: number) =>
     `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/figure/a/span`,
   Geography: (index: number) =>
@@ -58,38 +93,8 @@ const xpaths = {
     `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
 }
 
-/** Store the contents ready to put in a CSV. */
-const data: Map<string, string[]> = new Map()
-let index = 0
-
-// put as much data as possible into the array map
-while (true)
-  try {
-    index++ // 1-indexed for xpath's sake
-    for (const [key, fullXpath] of Object.entries(xpaths)) {
-      const xpathResult = document.evaluate(
-        fullXpath(index),
-        document,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
-      )
-      const element = assertNotNull(
-        xpathResult.singleNodeValue,
-        `Unable to find element for the ${index}th ${key} field.`
-      )
-      const content = assertNotNull(
-        element.textContent,
-        `No text found in the ${index}th ${key} field.`
-      )
-      data.set(key, [...(data.get(key) ?? []), content])
-    }
-  } catch (err) {
-    break
-  }
-
-// download the array map as a csv
 try {
+  const [data, index] = getData(userPaths)
   assert(data.size, 'No data was found to export')
   const csv = toCsv(data)
   download(`${index}_${Date.now()}.csv`, csv)
