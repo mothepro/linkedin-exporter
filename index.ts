@@ -74,11 +74,11 @@ function getData(xpaths: Record<string, (index: number) => string>) {
         data.set(key, [...(data.get(key) ?? []), content])
       }
     } catch (err) {
-      console.log(err)
+      console.error(err)
       break
     }
 
-  return [data, index] as const
+  return [data, index - 1] as const
 }
 
 /** Paths to important fields in user-generated linkedin lists. */
@@ -93,11 +93,37 @@ const userPaths = {
     `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
 }
 
+/** Paths to important fields in user-generated linkedin lists. */
+const systemPaths = {
+  Name: (index: number) =>
+    `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[1]/div[1]/a`,
+  Geography: (index: number) =>
+    `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[3]`,
+  Title: (index: number) =>
+    `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[2]/span/div`,
+  Account: (index: number) =>
+    `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
+}
+
 try {
-  const [data, index] = getData(userPaths)
+  // todo use intl date formatter
+  const time = new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  })
+
+  console.log('searching user-generated xpaths')
+  let [data, index] = getData(userPaths)
+  if (data.size == 0 || index == 0) {
+    console.warn('Unable to find user generated paths')
+    console.log('searching system-generated xpaths')
+    ;[data, index] = getData(userPaths)
+  }
+
   assert(data.size, 'No data was found to export')
-  const csv = toCsv(data)
-  download(`${index}_${Date.now()}.csv`, csv)
+  download(`${index}_contacts_${time}.csv`, toCsv(data))
 } catch (err) {
   assert(err instanceof Error)
   alert(err.message)
