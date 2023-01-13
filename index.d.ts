@@ -8,13 +8,19 @@ declare const csvEscape: (data: string) => string;
 declare function download(filename: string, text: string, meta?: BlobPropertyBag): void;
 /** Convert an Array map to a stringified CSV. */
 declare function toCsv(contents: Map<string, string[]>): string;
-/** The contents and how to find them in the html */
-declare const xpaths: {
+/** Find the data from the given xpaths and return as an array map. */
+declare function getData(xpaths: Record<string, (index: number) => string>): readonly [Map<string, string[]>, number];
+/** Paths to important fields in user-generated linkedin lists. */
+declare const userPaths: {
     Name: (index: number) => string;
     Geography: (index: number) => string;
     Title: (index: number) => string;
     Account: (index: number) => string;
 };
-/** Store the contents ready to put in a CSV. */
-declare const data: Map<string, string[]>;
-declare let index: number;
+/** Paths to important fields in user-generated linkedin lists. */
+declare const systemPaths: {
+    Name: (index: number) => string;
+    Geography: (index: number) => string;
+    Title: (index: number) => string;
+    Account: (index: number) => string;
+};

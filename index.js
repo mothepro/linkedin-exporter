@@ -1,5 +1,4 @@
 "use strict";
-var _a;
 /** Assert an expression is true. */
 function assert(expression, message = 'Assertion Error') {
     if (!expression)
@@ -40,35 +39,59 @@ function toCsv(contents) {
     }
     return data.map(row => row.map(csvEscape).join(',')).join('\n');
 }
-/** The contents and how to find them in the html */
-const xpaths = {
+/** Find the data from the given xpaths and return as an array map. */
+function getData(xpaths) {
+    var _a;
+    const data = new Map();
+    let index = 0;
+    // put as much data as possible into the array map
+    while (true)
+        try {
+            index++; // 1-indexed for xpath's sake
+            for (const [key, fullXpath] of Object.entries(xpaths)) {
+                const xpathResult = document.evaluate(fullXpath(index), document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+                const element = assertNotNull(xpathResult.singleNodeValue, `Unable to find element for the ${index}th ${key} field.`);
+                const content = assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
+                data.set(key, [...((_a = data.get(key)) !== null && _a !== void 0 ? _a : []), content]);
+            }
+        }
+        catch (err) {
+            console.error(err);
+            break;
+        }
+    return [data, index - 1];
+}
+/** Paths to important fields in user-generated linkedin lists. */
+const userPaths = {
     Name: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/figure/a/span`,
     Geography: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[3]`,
     Title: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[2]/span/div`,
     Account: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
 };
-/** Store the contents ready to put in a CSV. */
-const data = new Map();
-let index = 0;
-// put as much data as possible into the array map
-while (true)
-    try {
-        index++; // 1-indexed for xpath's sake
-        for (const [key, fullXpath] of Object.entries(xpaths)) {
-            const xpathResult = document.evaluate(fullXpath(index), document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-            const element = assertNotNull(xpathResult.singleNodeValue, `Unable to find element for the ${index}th ${key} field.`);
-            const content = assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
-            data.set(key, [...((_a = data.get(key)) !== null && _a !== void 0 ? _a : []), content]);
-        }
-    }
-    catch (err) {
-        break;
-    }
-// download the array map as a csv
+/** Paths to important fields in user-generated linkedin lists. */
+const systemPaths = {
+    Name: (index) => `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[1]/div[1]/a`,
+    Geography: (index) => `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[3]`,
+    Title: (index) => `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[2]/span/div`,
+    Account: (index) => `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
+};
 try {
+    // todo use intl date formatter
+    const time = new Date().toLocaleDateString(undefined, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    });
+    console.log('searching user-generated xpaths');
+    let [data, index] = getData(userPaths);
+    if (data.size == 0 || index == 0) {
+        console.warn('Unable to find user generated paths');
+        console.log('searching system-generated xpaths');
+        [data, index] = getData(userPaths);
+    }
     assert(data.size, 'No data was found to export');
-    const csv = toCsv(data);
-    download(`${index}_${Date.now()}.csv`, csv);
+    download(`${index}_contacts_${time}.csv`, toCsv(data));
 }
 catch (err) {
     assert(err instanceof Error);
