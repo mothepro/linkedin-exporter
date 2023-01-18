@@ -31,8 +31,44 @@
     </article>
     </main>
     <footer>
-      Last built on <code build-time>never</code> by Mo.
+      Last updated <span build-time>a long time ago</span> by <a href="https://brazetechnology.slack.com/archives/D02PGE8LJ3G">Mo</a>.
   </footer>
 </body>
+
+<script>
+  // TODO use the `new Intl.RelativeTimeFormat(undefined, { style: 'narrow' })`
+  function timeAgo(prevDate) {
+      const diff = Date.now() - prevDate
+      const minute = 60 * 1000
+      const hour = minute * 60
+      const day = hour * 24
+      const month = day * 30
+      const year = day * 365
+      switch (true) {
+        case diff < minute:
+          const seconds = Math.round(diff / 1000)
+          return `${seconds} ${seconds > 1 ? 'seconds' : 'second'} ago`
+        case diff < hour:
+          return Math.round(diff / minute) + ' minutes ago'
+        case diff < day:
+          return Math.round(diff / hour) + ' hours ago'
+        case diff < month:
+          return Math.round(diff / day) + ' days ago'
+        case diff < year:
+          return Math.round(diff / month) + ' months ago'
+        case diff > year:
+          return Math.round(diff / year) + ' years ago'
+        default:
+          return ""
+      }
+    };
+
+  const
+    element = document.querySelector('[build-time]'),
+    buildTime = element.getAttribute('build-time'),
+    date = new Date(parseInt(buildTime))
+  element.innerHTML = timeAgo(+date)
+  element.title = date.toString()
+</script>
 
 </html>
