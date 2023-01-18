@@ -28,7 +28,7 @@ bookmarkletEl.setAttribute('href', `javascript:(function(){${encodeURI(minifiedC
 // add last build time
 const buildTimeEl = root.querySelector('[build-time]');
 if (buildTimeEl) {
-    buildTimeEl.setAttribute('build-time', new Date().toString());
+    buildTimeEl.setAttribute('build-time', Date.now().toString());
     buildTimeEl.innerHTML = new Date().toString();
 }
 // Print updated HTML
