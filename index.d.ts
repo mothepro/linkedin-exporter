@@ -13,6 +13,7 @@ declare function getData(xPaths: Record<string, (index: number) => string>): Map
 /** Paths to important fields in user-generated linkedin lists. */
 declare const userPaths: {
     Name: (index: number) => string;
+    Link: (index: number) => string;
     Geography: (index: number) => string;
     Title: (index: number) => string;
     Account: (index: number) => string;
@@ -20,6 +21,7 @@ declare const userPaths: {
 /** Paths to important fields in user-generated linkedin lists. */
 declare const systemPaths: {
     Name: (index: number) => string;
+    Link: (index: number) => string;
     Geography: (index: number) => string;
     Title: (index: number) => string;
     Account: (index: number) => string;

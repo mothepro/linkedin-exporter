@@ -53,7 +53,10 @@ function getData(xPaths) {
                 let content = '';
                 try {
                     const element = assertNotNull(xpathResult.singleNodeValue, `Unable to find element for the ${index}th ${key} field.`);
-                    content = assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
+                    content =
+                        key === 'Link'
+                            ? element.href
+                            : assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
                 }
                 catch (err) {
                     assert(err instanceof Error);
@@ -74,6 +77,7 @@ function getData(xPaths) {
 /** Paths to important fields in user-generated linkedin lists. */
 const userPaths = {
     Name: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/figure/a/span`,
+    Link: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/figure/a`,
     Geography: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[3]`,
     Title: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[2]/span/div`,
     Account: (index) => `/html/body/main/div[1]/div[2]/div[4]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
@@ -81,6 +85,7 @@ const userPaths = {
 /** Paths to important fields in user-generated linkedin lists. */
 const systemPaths = {
     Name: (index) => `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[1]/div[1]/a`,
+    Link: (index) => `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[1]/div[1]/a`,
     Geography: (index) => `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[3]`,
     Title: (index) => `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[1]/div/div[2]/div[2]/span/div`,
     Account: (index) => `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
