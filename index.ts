@@ -56,28 +56,20 @@ function getData(xPaths: Record<string, (index: number) => string>) {
     try {
       index++ // 1-indexed for xpath's sake
       for (const [key, fullXpath] of Object.entries(xPaths)) {
-        const xpathResult = document.evaluate(
+        let content = ''
+        const { singleNodeValue: element } = document.evaluate(
           fullXpath(index),
           document,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
           null
         )
-        let content = ''
-        try {
-          const element = assertNotNull(
-            xpathResult.singleNodeValue,
-            `Unable to find element for the ${index}th ${key} field.`
-          )
-          content =
-            key === 'Link'
-              ? (element as HTMLAnchorElement).href
-              : assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`)
-        } catch (err) {
-          assert(err instanceof Error)
-          // `Account` is actually an optional field.
-          // Rethrow the error if it's a required key.
-          assert(key === 'Account', err.message)
+        if (element) {
+          content = element.textContent ?? ''
+
+          if (key === 'Link' && element instanceof HTMLAnchorElement) {
+            content = element.href
+          }
         }
         data.set(key, [...(data.get(key) ?? []), content])
       }
@@ -126,7 +118,6 @@ try {
     month: 'short',
     day: 'numeric',
   })
-
 
   console.log('searching user-generated xpaths')
   let data = getData(userPaths)
