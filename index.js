@@ -41,7 +41,7 @@ function toCsv(contents) {
 }
 /** Find the data from the given xpaths and return as an array map. */
 function getData(xPaths) {
-    var _a;
+    var _a, _b;
     const data = new Map();
     let index = 0;
     // put as much data as possible into the array map
@@ -49,22 +49,15 @@ function getData(xPaths) {
         try {
             index++; // 1-indexed for xpath's sake
             for (const [key, fullXpath] of Object.entries(xPaths)) {
-                const xpathResult = document.evaluate(fullXpath(index), document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
                 let content = '';
-                try {
-                    const element = assertNotNull(xpathResult.singleNodeValue, `Unable to find element for the ${index}th ${key} field.`);
-                    content =
-                        key === 'Link'
-                            ? element.href
-                            : assertNotNull(element.textContent, `No text found in the ${index}th ${key} field.`);
+                const { singleNodeValue: element } = document.evaluate(fullXpath(index), document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+                if (element) {
+                    content = (_a = element.textContent) !== null && _a !== void 0 ? _a : '';
+                    if (key === 'Link' && element instanceof HTMLAnchorElement) {
+                        content = element.href;
+                    }
                 }
-                catch (err) {
-                    assert(err instanceof Error);
-                    // `Account` is actually an optional field.
-                    // Rethrow the error if it's a required key.
-                    assert(key === 'Account', err.message);
-                }
-                data.set(key, [...((_a = data.get(key)) !== null && _a !== void 0 ? _a : []), content]);
+                data.set(key, [...((_b = data.get(key)) !== null && _b !== void 0 ? _b : []), content]);
             }
         }
         catch (err) {

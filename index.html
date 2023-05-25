@@ -3,14 +3,17 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta     http-equiv="X-UA-Compatible"
+  <meta 
+    http-equiv="X-UA-Compatible"
     content="IE=edge"
   >
-  <meta     name="viewport"
+  <meta 
+    name="viewport"
     content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
   >
   <title>LinkedIn Sales Navigator Exporter</title>
-  <link     rel="stylesheet"
+  <link 
+    rel="stylesheet"
     href="https://unpkg.com/@picocss/pico@latest/css/pico.classless.min.css"
   >
 </head>
@@ -22,7 +25,7 @@
       <ol>
         <li>
           Drag
-          <a role="button" bookmarklet href="javascript:(function(){%22use%20strict%22;function%20t(t,e=%22Assertion%20Error%22)%7Bif(!t)throw%20new%20Error(e)%7Dfunction%20e(e,d)%7Breturn%20t(null!=e,d),e%7Dconst%20d=t=%3E%60%22$%7Bt.replace(/(%5Cr%5Cn%7C%5Cn%7C%5Cr%7C%5Cs+%7C%5Ct%7C&nbsp;)/gm,%22%20%22).replace(/%22/g,'%22%22').trim()%7D%22%60;function%20i(d)%7Bvar%20i;const%20n=new%20Map;let%20o=0;for(;;)try%7Bo++;for(const%5Ba,r%5Dof%20Object.entries(d))%7Bconst%20d=document.evaluate(r(o),document,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);let%20v=%22%22;try%7Bconst%20t=e(d.singleNodeValue,%60Unable%20to%20find%20element%20for%20the%20$%7Bo%7Dth%20$%7Ba%7D%20field.%60);v=%22Link%22===a?t.href:e(t.textContent,%60No%20text%20found%20in%20the%20$%7Bo%7Dth%20$%7Ba%7D%20field.%60)%7Dcatch(e)%7Bt(e%20instanceof%20Error),t(%22Account%22===a,e.message)%7Dn.set(a,%5B...null!==(i=n.get(a))&&void%200!==i?i:%5B%5D,v%5D)%7D%7Dcatch(t)%7Bconsole.error(t);break%7Dreturn%20n%7Dconst%20n=%7BName:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/figure/a/span%60,Link:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/figure/a%60,Geography:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B3%5D%60,Title:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/div%5B2%5D/div%5B2%5D/span/div%60,Account:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B2%5D/div/div/div/a/div/div/div/span%60%7D,o=%7BName:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/div%5B2%5D/div%5B1%5D/div%5B1%5D/a%60,Link:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/div%5B2%5D/div%5B1%5D/div%5B1%5D/a%60,Geography:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B3%5D%60,Title:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/div%5B2%5D/div%5B2%5D/span/div%60,Account:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B2%5D/div/div/div/a/div/div/div/span%60%7D;try%7Bconst%20e=(new%20Date).toLocaleDateString(void%200,%7Bweekday:%22long%22,year:%22numeric%22,month:%22short%22,day:%22numeric%22%7D);console.log(%22searching%20user-generated%20xpaths%22);let%20a=i(n);a.size%7C%7C(console.warn(%22Unable%20to%20find%20user%20generated%20paths%22),console.log(%22searching%20system-generated%20xpaths%22),a=i(o)),t(a.size,%22No%20data%20was%20found%20to%20export%22),function(t,e,d=%7Btype:%22text/csv%22%7D)%7Bconst%20i=document.createElement(%22a%22);i.setAttribute(%22href%22,URL.createObjectURL(new%20Blob(%5Be%5D,d))),i.setAttribute(%22download%22,t),i.style.display=%22none%22,document.body.appendChild(i),i.click()%7D(%60Contacts%20Exported%20on%20$%7Be%7D.csv%60,function(t)%7Bconst%20e=%5B%5B...t.keys()%5D%5D;for(let%20d=0;d%3CMath.max(...%5B...t.values()%5D.map((t=%3Et.length)));d++)%7Bconst%20i=%5B%5D;for(const%20n%20of%20e%5B0%5D)%7Bconst%20e=t.get(n);i.push(e%5Bd%5D)%7De.push(i)%7Dreturn%20e.map((t=%3Et.map(d).join(%22,%22))).join(%22%5Cn%22)%7D(a))%7Dcatch(e)%7Bt(e%20instanceof%20Error),alert(e.message)%7D})();">Export Contacts</a>
+          <a role="button" bookmarklet href="javascript:(function(){%22use%20strict%22;function%20t(t,d=%22Assertion%20Error%22)%7Bif(!t)throw%20new%20Error(d)%7Dconst%20d=t=%3E%60%22$%7Bt.replace(/(%5Cr%5Cn%7C%5Cn%7C%5Cr%7C%5Cs+%7C%5Ct%7C&nbsp;)/gm,%22%20%22).replace(/%22/g,'%22%22').trim()%7D%22%60;function%20e(t)%7Bvar%20d,e;const%20i=new%20Map;let%20n=0;for(;;)try%7Bn++;for(const%5Bo,a%5Dof%20Object.entries(t))%7Blet%20t=%22%22;const%7BsingleNodeValue:r%7D=document.evaluate(a(n),document,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null);r&&(t=null!==(d=r.textContent)&&void%200!==d?d:%22%22,%22Link%22===o&&r%20instanceof%20HTMLAnchorElement&&(t=r.href)),i.set(o,%5B...null!==(e=i.get(o))&&void%200!==e?e:%5B%5D,t%5D)%7D%7Dcatch(t)%7Bconsole.error(t);break%7Dreturn%20i%7Dconst%20i=%7BName:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/figure/a/span%60,Link:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/figure/a%60,Geography:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B3%5D%60,Title:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/div%5B2%5D/div%5B2%5D/span/div%60,Account:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B4%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B2%5D/div/div/div/a/div/div/div/span%60%7D,n=%7BName:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/div%5B2%5D/div%5B1%5D/div%5B1%5D/a%60,Link:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/div%5B2%5D/div%5B1%5D/div%5B1%5D/a%60,Geography:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B3%5D%60,Title:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B1%5D/div/div%5B2%5D/div%5B2%5D/span/div%60,Account:t=%3E%60/html/body/main/div%5B1%5D/div%5B2%5D/div%5B5%5D/table/tbody/tr%5B$%7Bt%7D%5D/td%5B2%5D/div/div/div/a/div/div/div/span%60%7D;try%7Bconst%20o=(new%20Date).toLocaleDateString(void%200,%7Bweekday:%22long%22,year:%22numeric%22,month:%22short%22,day:%22numeric%22%7D);console.log(%22searching%20user-generated%20xpaths%22);let%20a=e(i);a.size%7C%7C(console.warn(%22Unable%20to%20find%20user%20generated%20paths%22),console.log(%22searching%20system-generated%20xpaths%22),a=e(n)),t(a.size,%22No%20data%20was%20found%20to%20export%22),function(t,d,e=%7Btype:%22text/csv%22%7D)%7Bconst%20i=document.createElement(%22a%22);i.setAttribute(%22href%22,URL.createObjectURL(new%20Blob(%5Bd%5D,e))),i.setAttribute(%22download%22,t),i.style.display=%22none%22,document.body.appendChild(i),i.click()%7D(%60Contacts%20Exported%20on%20$%7Bo%7D.csv%60,function(t)%7Bconst%20e=%5B%5B...t.keys()%5D%5D;for(let%20d=0;d%3CMath.max(...%5B...t.values()%5D.map((t=%3Et.length)));d++)%7Bconst%20i=%5B%5D;for(const%20n%20of%20e%5B0%5D)%7Bconst%20e=t.get(n);i.push(e%5Bd%5D)%7De.push(i)%7Dreturn%20e.map((t=%3Et.map(d).join(%22,%22))).join(%22%5Cn%22)%7D(a))%7Dcatch(d)%7Bt(d%20instanceof%20Error),alert(d.message)%7D})();">Export Contacts</a>
           to your bookmarks
         </li>
         <li>Open a your prospect list you have created in sales navigator</li>
@@ -35,23 +38,18 @@
   </main>
   <footer>
     Made in AUX by
-    <a       target="_blank"
+    <a 
+      target="_blank"
       rel="noopener"
       href="https://brazetechnology.slack.com/archives/D02PGE8LJ3G"
     >Mo</a>
-    &amp;
-    <a       target="_blank"
-      rel="noopener"
-      href="https://brazetechnology.slack.com/archives/D03363AFTCM"
-    >Nick</a>
-    <span build-time="1674161158225">Thu Jan 19 2023 14:45:58 GMT-0600 (Central Standard Time)</span>
-    <br>
-    <code>
-    <a       href="https://github.com/mothepro/linkedin-exporter"
+    <span build-time="1685010014764">Thu May 25 2023 05:20:14 GMT-0500 (Central Daylight Time)</span>
+    with
+    <a 
+      href="https://github.com/mothepro/linkedin-exporter"
       target="_blank"
       rel="noopener noreferrer"
-    >Source Code</a>
-    </code>
+    >TypeScript</a>.
   </footer>
 </body>
 
