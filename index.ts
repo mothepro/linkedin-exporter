@@ -3,11 +3,25 @@ function assert(expression: unknown, message = 'Assertion Error'): asserts expre
   if (!expression) throw new Error(message)
 }
 
+/** Assert an expression is true. */
+function assertInstanceOf(
+  expression: unknown,
+  parent: any,
+  message = 'Assertion Error'
+): InstanceType<typeof parent> {
+  assert(expression instanceof parent, message)
+  return expression
+}
+
 /** Assert an expression is not null, and returns it. */
 function assertNotNull<T>(expression: T, message?: string): NonNullable<T> {
   assert(expression != null, message)
   return expression
 }
+
+const getElementByXpath = (xpath: string) =>
+  document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+    .singleNodeValue
 
 /** Escapes a CSV */
 const csvEscape = (data: string) =>
@@ -46,9 +60,9 @@ function toCsv(contents: Map<string, string[]>) {
   return data.map(row => row.map(csvEscape).join(',')).join('\n')
 }
 
-/** Find the data from the given xpaths and return as an array map. */
-function getData(xPaths: Record<string, (index: number) => string>) {
-  const data: Map<string, string[]> = new Map()
+/** Returns the data from the given xpaths on the current view. */
+function getViewableList(xPaths: Paths) {
+  const data = new Map<string, string[]>()
   let index = 0
 
   // put as much data as possible into the array map
@@ -57,13 +71,7 @@ function getData(xPaths: Record<string, (index: number) => string>) {
       index++ // 1-indexed for xpath's sake
       for (const [key, fullXpath] of Object.entries(xPaths)) {
         let content = ''
-        const { singleNodeValue: element } = document.evaluate(
-          fullXpath(index),
-          document,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
-        )
+        const element = getElementByXpath(fullXpath(index))
         if (element) {
           content = element.textContent ?? ''
 
@@ -82,6 +90,31 @@ function getData(xPaths: Record<string, (index: number) => string>) {
   return data
 }
 
+async function getData(xPaths: Paths, nextButtonGenerator: () => HTMLAnchorElement | void) {
+  const data = new Map<string, string[]>()
+
+  while (true) {
+    // Fill up total list
+    for (const [column, updatedRows] of getViewableList(xPaths)) {
+      const originalRows = data.get(column) ?? []
+      data.set(column, [...originalRows, ...updatedRows])
+    }
+
+    const nextButton = nextButtonGenerator()
+
+    // we are done if the next button is not clickable
+    if (!nextButton?.getAttribute('onclick')) break
+
+    nextButton.click()
+
+    // wait for next page to load
+    await new Promise(resolve => setTimeout(resolve, 1000)) // TODO replace with event listener
+  }
+
+  return data
+}
+
+type Paths = Record<string, (index: number) => string>
 /** Paths to important fields in user-generated linkedin lists. */
 const userPaths = {
   Name: (index: number) =>
@@ -110,6 +143,8 @@ const systemPaths = {
     `/html/body/main/div[1]/div[2]/div[5]/table/tbody/tr[${index}]/td[2]/div/div/div/a/div/div/div/span`,
 }
 
+const nextButtonXpath = `/html/body/main/div[1]/div[2]/div[5]/div[2]/button[2]` // double check
+
 try {
   // todo use intl date formatter
   const time = new Date().toLocaleDateString(undefined, {
@@ -120,11 +155,15 @@ try {
   })
 
   console.log('searching user-generated xpaths')
-  let data = getData(userPaths)
+  let data = await getData(userPaths, () =>
+    assertInstanceOf(getElementByXpath(nextButtonXpath), HTMLAnchorElement)
+  )
   if (!data.size) {
     console.warn('Unable to find user generated paths')
     console.log('searching system-generated xpaths')
-    data = getData(systemPaths)
+    data = await getData(systemPaths, () =>
+      assertInstanceOf(getElementByXpath(nextButtonXpath), HTMLAnchorElement)
+    )
   }
 
   assert(data.size, 'No data was found to export')
